@@ -1,11 +1,16 @@
-import { Link } from "react-router-dom"
+import { Button } from "@mui/material";
+import "./Home.css";
 
 export const Home = () => {
-    return <>
-        <p>Home Page</p>
-        <Link to="/about">
-            <button>About</button>
-        </Link>
-
-    </>
-}
+  return (
+    <section className="home-section">
+      <h1 className="home-title">Find Your Perfect PG Today</h1>
+      <p className="home-subtitle">
+        Browse the best paying guest accommodations with ease.
+      </p>
+      <Button variant="contained" color="primary" className="cta-button">
+        Get Started
+      </Button>
+    </section>
+  );
+};
