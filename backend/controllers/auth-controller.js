@@ -17,15 +17,19 @@ const home = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        const { username, email, phone, password } = req.body
+        const { username, email, phone, password, role } = req.body
         const userExist = await User.findOne({ email });
+        const validRoles = ["user", "owner"];
+        if (!validRoles.includes(role.toLowerCase())) {
+            return res.status(400).json({ message: "Invalid role specified" });
+        }
 
         if (userExist) {
             return res.status(400).json({ message: "Email already exists" });
         }
 
 
-        const userCreated = await User.create({ username, email, phone, password })
+        const userCreated = await User.create({ username, email, phone, password, role })
         res.status(201).json(
             {
                 // msg: userCreated,
@@ -43,13 +47,15 @@ const register = async (req, res) => {
 //login logic
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password,role } = req.body;
         const userExist = await User.findOne({ email });
         console.log("password", password)
 
-        console.log("userExist.password", userExist.password)
 
-
+        const validRoles = ["user", "owner"];
+        if (!validRoles.includes(role.toLowerCase())) {
+            return res.status(400).json({ message: "Invalid role specified" });
+        }
 
         if (!userExist) {
             return res.status(400).json({ message: "Invalid Credentials" });
@@ -61,7 +67,6 @@ const login = async (req, res) => {
         if (user) {
             res.status(200).json(
                 {
-                    // msg: userCreated,
                     msg: "Login Successfull!!",
                     token: await userExist.generateToken(),
                     userId: userExist._id.toString()

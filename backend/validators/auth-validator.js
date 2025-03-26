@@ -22,7 +22,9 @@ const signUpSchema = z.object({
         .trim()
         .min(6, { message: "Password must be at least of 6 characters." })
         .max(50, { message: "Password must not be more than 50 characters." }),
-
+    role: z
+        .string({ required_error: "Role is required." })
+        .trim()
 })
 
 module.exports = signUpSchema;
