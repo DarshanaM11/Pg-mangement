@@ -1,7 +1,5 @@
 .home-section {
-    background: linear-gradient(135deg,#1e293b,#2c3d59, #605e86, #3a3a75); /* Gradient */
-
-    /* background-color: #1e293b; */
+    background: linear-gradient(135deg, #1e293b, #2c3d59, #605e86, #3a3a75);
     color: white;
     height: 100vh;
     display: flex;

@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { TextField, Button, Typography, Container, Paper, MenuItem } from "@mui/material";
+import { TextField, Button, Typography, Paper, MenuItem } from "@mui/material";
 import "./Auth.css";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
@@ -12,7 +11,7 @@ export const Register = () => {
     const handleChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
-    
+
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -22,9 +21,7 @@ export const Register = () => {
         try {
             const response = await fetch(`http://localhost:5001/register`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(user),
             });
 
@@ -33,12 +30,10 @@ export const Register = () => {
             if (!response.ok) {
                 throw new Error(data.message || "Registration failed");
             }
-            
+
             setUser({ username: "", email: "", phone: "", password: "", role: "user" });
             navigate("/login");
             toast.success("Registered successfully!");
-
-            console.log("Response:", data);
         } catch (error) {
             toast.error(error.message || "Something went wrong!");
             console.error("Register error:", error);
@@ -113,6 +108,8 @@ export const Register = () => {
                                 >
                                     <MenuItem value="user">User</MenuItem>
                                     <MenuItem value="owner">Owner</MenuItem>
+                                    <MenuItem value="admin">Admin</MenuItem>
+
                                 </TextField>
                                 <div className="auth-footer">
                                     <Button type="submit" variant="contained" color="primary" fullWidth className="auth-btn">

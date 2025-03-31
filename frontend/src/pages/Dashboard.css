@@ -1,0 +1,34 @@
+/* OwnerDashboard.css */
+.dashboard-layout {
+    position: relative;
+}
+
+.dashboard-content {
+    padding-top: 64px; /* Ensure the content doesn't overlap the navbar */
+}
+
+.menu-icon {
+    position: fixed;
+    left: 16px; /* Position it 16px from the right edge */
+    top: 80px; /* Position it below the navbar, adjust this value based on the navbar height */
+    z-index: 100; /* Make sure it's above other elements */
+}
+
+/* Rest of your styles */
+.pg-listings {
+    margin-top: 20px;
+}
+
+.pg-card {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.add-pg-btn {
+    margin-top: 20px;
+}
+
+.loading-spinner {
+    display: block;
+    margin: 50px auto;
+}

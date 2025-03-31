@@ -26,5 +26,19 @@ const signUpSchema = z.object({
         .string({ required_error: "Role is required." })
         .trim()
 })
+// Login Schema
+const loginSchema = z.object({
+    email: z
+        .string({ required_error: "Email is required." })
+        .trim()
+        .email({ message: "Invalid Email" })
+        .min(3, { message: "Email must be at least of 3 characters." })
+        .max(50, { message: "Email must not be more than 50 characters." }),
+    password: z
+        .string({ required_error: "Password is required." })
+        .trim()
+        .min(6, { message: "Password must be at least of 6 characters." })
+        .max(50, { message: "Password must not be more than 50 characters." }),
+});
 
-module.exports = signUpSchema;
+module.exports = { signUpSchema, loginSchema };
