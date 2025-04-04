@@ -7,6 +7,8 @@ import { Register } from "./pages/Register";
 import { Login } from "./pages/Login";
 import { UserDashboard } from "./pages/UserDashboard";
 import { OwnerDashboard } from "./pages/OwnerDashboard";
+import { MyPGs } from "./pages/myPgs";
+
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { Navbar } from "./components/Navbar";
 
@@ -46,6 +48,8 @@ const App = () => {
                 <Route path="/user-dashboard" element={<ProtectedRoute element={<UserDashboard />} allowedRoles={["user"]} />} />
                 <Route path="/owner-dashboard" element={<ProtectedRoute element={<OwnerDashboard />} allowedRoles={["owner"]} />} />
                 <Route path="/admin-dashboard" element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={["admin"]} />} />
+                <Route path="/user-dashboard/my-pgs" element={<ProtectedRoute element={<MyPGs />} allowedRoles={["owner"]} />} />
+
             </Routes>
         </BrowserRouter>
     );

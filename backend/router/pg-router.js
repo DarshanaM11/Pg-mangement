@@ -1,5 +1,5 @@
 const express = require("express");
-const { addPG, getApprovedPGs, getOwnerPGs, approvePG, deletePG, requestPG } = require("../controllers/pg-controller");
+const { addPG, getApprovedPGs, getOwnerPGs, approvePG, deletePG, requestPG,updatePG } = require("../controllers/pg-controller");
 const authMiddleware = require("../middlewares/auth-middleware");
 
 const router = express.Router();
@@ -21,5 +21,9 @@ router.delete("/delete/:pgId", authMiddleware, deletePG);
 
 // User requests to book a PG
 router.post("/request/:pgId", authMiddleware, requestPG);
+
+// ✅ Update PG by owner
+router.put("/update/:pgId", authMiddleware, updatePG);
+
 
 module.exports = router;

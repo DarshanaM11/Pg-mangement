@@ -126,4 +126,35 @@ const requestPG = async (req, res) => {
     }
 };
 
-module.exports = { addPG, getApprovedPGs, getOwnerPGs, approvePG, deletePG, requestPG };
+const updatePG = async (req, res) => {
+    const ownerId = req.user._id; // Extracted from authMiddleware
+    const { pgId } = req.params;
+    const updateData = req.body;
+
+    try {
+        const existingPG = await PG.findById(pgId);
+
+        if (!existingPG) {
+            return res.status(404).json({ message: "PG not found" });
+        }
+
+        if (existingPG.owner.toString() !== ownerId.toString()) {
+            return res.status(403).json({ message: "Unauthorized: Not your PG" });
+        }
+
+        // Prevent manual approval field changes
+        delete updateData.approved;
+
+        const updatedPG = await PG.findByIdAndUpdate(pgId, updateData, { new: true });
+
+        res.status(200).json({
+            message: "PG updated successfully",
+            pg: updatedPG,
+        });
+    } catch (error) {
+        console.error("Error updating PG:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+module.exports = { addPG, getApprovedPGs, getOwnerPGs, approvePG, deletePG, requestPG, updatePG };
