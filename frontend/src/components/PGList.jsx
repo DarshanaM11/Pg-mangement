@@ -15,14 +15,24 @@ const PGList = ({ status, title }) => {
     const [pgs, setPgs] = useState([]);
     const [selectedPG, setSelectedPG] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
+    console.log("selectedPG", selectedPG?.images)
 
     useEffect(() => {
         const fetchPGs = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("No token found in localStorage");
+                return;
+            }
+
             try {
                 const res = await fetch(`http://localhost:5001/api/admin/pgs/${status}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+
+                console.log("API status:", res);
+
 
                 if (!res.ok) throw new Error("Failed to fetch PGs");
 
@@ -35,7 +45,8 @@ const PGList = ({ status, title }) => {
         };
 
         fetchPGs();
-    }, [status, token]);
+    }, [status]);
+
 
     const handleView = (pg) => {
         setSelectedPG(pg);
@@ -84,15 +95,32 @@ const PGList = ({ status, title }) => {
                                 <>
                                     <Typography sx={{ mt: 2 }}><strong>Images:</strong></Typography>
                                     <Grid container spacing={2}>
-                                        {selectedPG.images.map((img, index) => (
-                                            <Grid item xs={6} key={index}>
-                                                <img
-                                                    src={img}
-                                                    alt={`PG-${index}`}
-                                                    style={{ width: "100%", height: "150px", objectFit: "cover" }}
-                                                />
-                                            </Grid>
-                                        ))}
+                                        {Array.isArray(selectedPG?.images) && selectedPG.images.filter(Boolean).length > 0 ? (
+                                            <>
+                                                <Typography sx={{ mt: 2 }}><strong>Images:</strong></Typography>
+                                                <Grid container spacing={2}>
+                                                    {selectedPG.images.filter(Boolean).map((img, index) => (
+                                                        <Grid item xs={6} key={index}>
+                                                            <img
+                                                                src={
+                                                                    img?.startsWith("http")
+                                                                        ? img
+                                                                        : `http://localhost:5001/uploads/${img}`
+                                                                }
+                                                                alt={`PG-${index}`}
+                                                                style={{ width: "100%", height: "150px", objectFit: "cover", borderRadius: "8px" }}
+                                                                onError={(e) => { e.target.src = "/fallback-image.jpg"; }}
+                                                            />
+                                                        </Grid>
+                                                    ))}
+                                                </Grid>
+                                            </>
+                                        ) : (
+                                            <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
+                                                No images uploaded.
+                                            </Typography>
+                                        )}
+
                                     </Grid>
                                 </>
                             )}

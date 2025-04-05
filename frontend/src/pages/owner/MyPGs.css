@@ -39,7 +39,11 @@
 }
 
 .pending {
-    color: orange;
+    color: rgb(255, 183, 0);
+    font-weight: bold;
+}
+.rejected{
+    color: red;
     font-weight: bold;
 }
 

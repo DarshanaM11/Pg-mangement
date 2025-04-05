@@ -112,8 +112,8 @@ export const OwnerDashboard = () => {
     const handleAddPGSubmit = async (e) => {
         e.preventDefault();
     
-        if (!newPG.name || !newPG.location || !newPG.price || !newPG.contact || !newPG.image) {
-            toast.error("Name, location, price, contact, and image are required!");
+        if (!newPG.name || !newPG.location || !newPG.price || !newPG.contact ) {
+            toast.error("Name, location, price and contact are required!");
             return;
         }
     

@@ -50,7 +50,11 @@ export const MyPGs = () => {
     };
 
     const handleEditClick = (pg) => {
-        setSelectedPG({ ...pg, amenities: pg.amenities?.join(", ") || "" });
+        setSelectedPG({
+            ...pg,
+            amenities: pg.amenities?.join(", ") || "",
+            images: Array.isArray(pg.images) ? pg.images.filter(Boolean) : []
+        });
         setImageFiles([]);
         setOpenDialog(true);
     };
@@ -82,7 +86,7 @@ export const MyPGs = () => {
             formData.append("description", selectedPG.description || "");
             formData.append("amenities", selectedPG.amenities);
             imageFiles.forEach((file) => {
-                formData.append("images", file); // ✅ name should match multer field
+                formData.append("images", file); // ✅ match multer field name
             });
 
             const response = await fetch(`http://localhost:5001/api/pg/update/${selectedPG._id}`, {
@@ -144,9 +148,8 @@ export const MyPGs = () => {
                                     <Typography>Location: {pg.location}</Typography>
                                     <Typography>Price: ₹{pg.price}</Typography>
                                     <Typography>
-                                        Status: <strong className={pg.approved ? "approved" : "pending"}>
-                                            {pg.approved ? "Approved" : "Pending"}
-                                        </strong>
+                                        Status: <strong className={pg.status == "approved" ? "approved" : pg.status == "pending" ? "pending" : "rejected"}>
+                                            {pg.status == "approved" ? "Approved" : pg.status == "pending" ? "Pending" : "Rejected"}                                        </strong>
                                     </Typography>
                                 </div>
                                 <div className="pg-actions">
@@ -224,36 +227,45 @@ export const MyPGs = () => {
                             />
 
                             {/* Image Previews */}
-                            {selectedPG.images.map((imgUrl, index) => (
-                                <div
-                                    key={index}
-                                    style={{
-                                        width: "100px",
-                                        height: "100px",
-                                        borderRadius: "4px",
-                                        overflow: "hidden",
-                                        border: "1px solid #ddd",
-                                        backgroundColor: "#fff",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <img
-                                        src={
-                                            imgUrl.startsWith("http")
-                                                ? imgUrl
-                                                : `http://localhost:5001/uploads/${imgUrl}`
-                                        }
-                                        alt={`PG ${index}`}
-                                        style={{
-                                            width: "100%",
-                                            height: "100%",
-                                            objectFit: "cover",
-                                        }}
-                                    />
+                            {Array.isArray(selectedPG?.images) && selectedPG.images.filter(Boolean).length > 0 ? (
+                                <div style={{ display: "flex", gap: "8px", marginTop: "16px", flexWrap: "wrap" }}>
+                                    {selectedPG.images.map((imgUrl, index) => (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                width: "100px",
+                                                height: "100px",
+                                                borderRadius: "4px",
+                                                overflow: "hidden",
+                                                border: "1px solid #ddd",
+                                                backgroundColor: "#fff",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                            }}
+                                        >
+                                            <img
+                                                src={
+                                                    imgUrl?.startsWith("http")
+                                                        ? imgUrl
+                                                        : `http://localhost:5001/uploads/${imgUrl}`
+                                                }
+                                                alt={`PG ${index}`}
+                                                style={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    objectFit: "cover",
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            ) : (
+                                <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
+                                    No images uploaded.
+                                </Typography>
+                            )}
+
                         </>
                     )}
                 </DialogContent>

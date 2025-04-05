@@ -43,9 +43,9 @@ const addPG = async (req, res) => {
 
         const { name, location, price, description, amenities, contact } = req.body;
 
-        if (!req.file) {
-            return res.status(400).json({ message: "Image file is required" });
-        }
+        // if (!req.file) {
+        //     return res.status(400).json({ message: "Image file is required" });
+        // }
 
         const newPG = new PG({
             name,
@@ -53,7 +53,7 @@ const addPG = async (req, res) => {
             price,
             description,
             amenities: JSON.parse(amenities),
-            images: [req.file.filename],
+            images: [req?.file?.filename],
             owner: req.user._id,
             contact,
         });
