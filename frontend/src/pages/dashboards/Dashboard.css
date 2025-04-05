@@ -31,3 +31,33 @@
 .dashboard-card:hover {
     transform: scale(1.05);
 }
+
+
+.admin-dashboard-container {
+    display: flex;
+}
+
+.admin-dashboard-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.chart-container {
+    max-width: 400px;
+    margin-bottom: 30px;
+}
+
+.card-grid {
+    margin-top: 20px;
+}
+
+.dashboard-card {
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.dashboard-card:hover {
+    background-color: #f0f0f0;
+}

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { TextField, Button, Typography, Paper, Container } from "@mui/material";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast} from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 
@@ -56,7 +55,6 @@ export const Login = ({ setUserRole }) => {  // Accept setUserRole as prop
 
     return (
         <div className="center">
-            <ToastContainer position="top-right" autoClose={3000} />
             <div className="main">
                 <div className="left-section">
                     <Typography variant="h3" className="welcome-text">Welcome Back!</Typography>

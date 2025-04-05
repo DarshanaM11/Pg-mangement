@@ -14,22 +14,20 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast, ToastContainer } from "react-toastify";
-// import { useNavigate } from "react-router-dom";
-import "./MyPGs.css"; // ✅ Add necessary CSS styles
+import "./MyPGs.css";
 
 export const MyPGs = () => {
     const [pgs, setPgs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedPG, setSelectedPG] = useState(null);
+    const [imageFiles, setImageFiles] = useState([]);
     const token = localStorage.getItem("token");
-    // const navigate = useNavigate();
 
     useEffect(() => {
         fetchMyPGs();
     }, []);
 
-    // ✅ Fetch all PGs uploaded by owner
     const fetchMyPGs = async () => {
         try {
             const response = await fetch("http://localhost:5001/api/pg/owner-listings", {
@@ -42,7 +40,6 @@ export const MyPGs = () => {
             if (!response.ok) throw new Error("Failed to fetch PGs");
 
             const data = await response.json();
-            console.log("Fetched PGs:", data);
             setPgs(data);
         } catch (error) {
             console.error("Error fetching PGs:", error);
@@ -52,22 +49,25 @@ export const MyPGs = () => {
         }
     };
 
-    // ✅ Handle edit button click
     const handleEditClick = (pg) => {
-        setSelectedPG(pg);
+        setSelectedPG({ ...pg, amenities: pg.amenities?.join(", ") || "" });
+        setImageFiles([]);
         setOpenDialog(true);
     };
 
-    // ✅ Handle input change for editing PG
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setSelectedPG((prev) => ({
             ...prev,
-            [name]: name === "amenities" || name === "images" ? value.split(",").map((item) => item.trim()) : value
+            [name]: value,
         }));
     };
 
-    // ✅ Handle updating PG details
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setImageFiles(files);
+    };
+
     const handleUpdatePG = async () => {
         if (!selectedPG.name || !selectedPG.location || !selectedPG.price) {
             toast.error("Name, location, and price are required!");
@@ -75,16 +75,22 @@ export const MyPGs = () => {
         }
 
         try {
+            const formData = new FormData();
+            formData.append("name", selectedPG.name);
+            formData.append("location", selectedPG.location);
+            formData.append("price", selectedPG.price);
+            formData.append("description", selectedPG.description || "");
+            formData.append("amenities", selectedPG.amenities);
+            imageFiles.forEach((file) => {
+                formData.append("images", file); // ✅ name should match multer field
+            });
+
             const response = await fetch(`http://localhost:5001/api/pg/update/${selectedPG._id}`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    ...selectedPG,
-                    price: Number(selectedPG.price),
-                }),
+                body: formData,
             });
 
             const result = await response.json();
@@ -92,13 +98,13 @@ export const MyPGs = () => {
 
             toast.success(result.message || "PG updated successfully!");
             setOpenDialog(false);
-            fetchMyPGs(); // Refresh list
+            setImageFiles([]);
+            fetchMyPGs();
         } catch (error) {
             toast.error(error.message || "Failed to update PG.");
         }
     };
 
-    // ✅ Handle deleting a PG
     const handleDeletePG = async (pgId) => {
         if (!window.confirm("Are you sure you want to delete this PG?")) return;
 
@@ -114,7 +120,7 @@ export const MyPGs = () => {
             if (!response.ok) throw new Error(result.message || "Failed to delete PG");
 
             toast.success(result.message || "PG deleted successfully!");
-            fetchMyPGs(); // Refresh list
+            fetchMyPGs();
         } catch (error) {
             toast.error(error.message || "Failed to delete PG.");
         }
@@ -158,23 +164,102 @@ export const MyPGs = () => {
             )}
 
             {/* Edit PG Dialog */}
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
                 <DialogTitle>Edit PG</DialogTitle>
                 <DialogContent>
                     {selectedPG && (
                         <>
-                            <TextField label="Name" name="name" fullWidth margin="normal" value={selectedPG.name} onChange={handleInputChange} />
-                            <TextField label="Location" name="location" fullWidth margin="normal" value={selectedPG.location} onChange={handleInputChange} />
-                            <TextField label="Price" name="price" type="number" fullWidth margin="normal" value={selectedPG.price} onChange={handleInputChange} />
-                            <TextField label="Description" name="description" fullWidth multiline rows={3} margin="normal" value={selectedPG.description} onChange={handleInputChange} />
-                            <TextField label="Amenities" name="amenities" fullWidth margin="normal" value={selectedPG.amenities.join(", ")} onChange={handleInputChange} />
-                            <TextField label="Images" name="images" fullWidth margin="normal" value={selectedPG.images.join(", ")} onChange={handleInputChange} />
+                            <TextField
+                                label="Name"
+                                name="name"
+                                fullWidth
+                                margin="normal"
+                                value={selectedPG.name}
+                                onChange={handleInputChange}
+                            />
+                            <TextField
+                                label="Location"
+                                name="location"
+                                fullWidth
+                                margin="normal"
+                                value={selectedPG.location}
+                                onChange={handleInputChange}
+                            />
+                            <TextField
+                                label="Price"
+                                name="price"
+                                type="number"
+                                fullWidth
+                                margin="normal"
+                                value={selectedPG.price}
+                                onChange={handleInputChange}
+                            />
+                            <TextField
+                                label="Description"
+                                name="description"
+                                fullWidth
+                                multiline
+                                rows={3}
+                                margin="normal"
+                                value={selectedPG.description}
+                                onChange={handleInputChange}
+                            />
+                            <TextField
+                                label="Amenities (comma separated)"
+                                name="amenities"
+                                fullWidth
+                                margin="normal"
+                                value={selectedPG.amenities}
+                                onChange={handleInputChange}
+                            />
+
+                            {/* Image File Upload */}
+                            <input
+                                type="file"
+                                name="images"
+                                multiple
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                style={{ marginTop: "16px" }}
+                            />
+
+                            {/* Image Previews */}
+                            {selectedPG.images.map((imgUrl, index) => (
+                                <div
+                                    key={index}
+                                    style={{
+                                        width: "100px",
+                                        height: "100px",
+                                        borderRadius: "4px",
+                                        overflow: "hidden",
+                                        border: "1px solid #ddd",
+                                        backgroundColor: "#fff",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <img
+                                        src={
+                                            imgUrl.startsWith("http")
+                                                ? imgUrl
+                                                : `http://localhost:5001/uploads/${imgUrl}`
+                                        }
+                                        alt={`PG ${index}`}
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            objectFit: "cover",
+                                        }}
+                                    />
+                                </div>
+                            ))}
                         </>
                     )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-                    <Button onClick={handleUpdatePG}>Update</Button>
+                    <Button onClick={handleUpdatePG} variant="contained" color="primary">Update</Button>
                 </DialogActions>
             </Dialog>
 

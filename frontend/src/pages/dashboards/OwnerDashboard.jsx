@@ -36,8 +36,8 @@ export const OwnerDashboard = () => {
         location: "",
         price: "",
         description: "",
-        amenities: [],
-        images: [],
+        amenities: "",
+        image: null,
         contact: ""
     });
 
@@ -46,20 +46,28 @@ export const OwnerDashboard = () => {
 
     useEffect(() => {
         fetchOwnerStats();
-        fetchOwnerInfo();
+        // fetchOwnerInfo();
     }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewPG((prev) => ({
             ...prev,
-            [name]: name === "amenities" || name === "images" ? value.split(",").map((item) => item.trim()) : value
+            [name]: value
+        }));
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setNewPG((prev) => ({
+            ...prev,
+            image: file
         }));
     };
 
     const fetchOwnerStats = async () => {
         try {
-            const response = await fetch("http://localhost:5001/api/pg/owner-stats", {
+            const response = await fetch("http://localhost:5001/api/pg/owner-listings", {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${token}` },
             });
@@ -74,23 +82,23 @@ export const OwnerDashboard = () => {
         }
     };
 
-    const fetchOwnerInfo = async () => {
-        try {
-            const response = await fetch("http://localhost:5001/api/owner/info", {
-                method: "GET",
-                headers: { "Authorization": `Bearer ${token}` },
-            });
-            if (!response.ok) throw new Error("Failed to fetch owner info");
+    // const fetchOwnerInfo = async () => {
+    //     try {
+    //         const response = await fetch("http://localhost:5001/api/owner/info", {
+    //             method: "GET",
+    //             headers: { "Authorization": `Bearer ${token}` },
+    //         });
+    //         if (!response.ok) throw new Error("Failed to fetch owner info");
 
-            const data = await response.json();
-            setOwnerInfo(data);
-        } catch {
-            toast.error("Failed to fetch owner info.");
-        }
-    };
+    //         const data = await response.json();
+    //         setOwnerInfo(data);
+    //     } catch {
+    //         toast.error("Failed to fetch owner info.");
+    //     }
+    // };
 
     const handleCardClick = (type) => {
-        navigate(`/pgs/${type}`);
+        navigate(`/owner-dashboard/${type}`);
     };
 
     const handleAddPG = () => {
@@ -102,37 +110,49 @@ export const OwnerDashboard = () => {
     };
 
     const handleAddPGSubmit = async (e) => {
-        e.preventDefault(); // ✅ Prevents form default behavior
-
-        if (!newPG.name || !newPG.location || !newPG.price || !newPG.contact) {
-            toast.error("Name, location, price, and contact are required!");
+        e.preventDefault();
+    
+        if (!newPG.name || !newPG.location || !newPG.price || !newPG.contact || !newPG.image) {
+            toast.error("Name, location, price, contact, and image are required!");
             return;
         }
-
+    
+        const formData = new FormData();
+        formData.append("name", newPG.name);
+        formData.append("location", newPG.location);
+        formData.append("price", newPG.price);
+        formData.append("description", newPG.description);
+    
+        // ✅ Ensure amenities is sent as JSON string (array of strings)
+        const amenityArray = newPG.amenities
+            ? newPG.amenities.split(",").map((a) => a.trim())
+            : [];
+        formData.append("amenities", JSON.stringify(amenityArray));
+    
+        formData.append("contact", newPG.contact);
+        formData.append("image", newPG.image);
+    
         try {
             const response = await fetch("http://localhost:5001/api/pg/add", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${token}`
+                    // ❌ DO NOT set Content-Type here (fetch with FormData handles it automatically)
                 },
-                body: JSON.stringify({
-                    ...newPG,
-                    price: Number(newPG.price)
-                }),
+                body: formData
             });
-
+    
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || "Failed to add PG");
-
+    
             toast.success(result.message || "PG added successfully!");
-            navigate("/user-dashboard/my-pgs")
             setOpenDialog(false);
+            navigate("/owner-dashboard/my-pgs");
         } catch (error) {
             toast.error(error.message || "Failed to add PG.");
         }
     };
-
+    
     const handleProfileClick = () => {
         setOwnerInfo(ownerInfo);
     };
@@ -152,7 +172,7 @@ export const OwnerDashboard = () => {
                     <CircularProgress className="loading-spinner" />
                 ) : (
                     <div className="card-container">
-                        <Paper className="dashboard-card" onClick={() => handleCardClick("uploaded-pgs")}>
+                        <Paper className="dashboard-card" onClick={() => handleCardClick("my-pgs")}>
                             <Typography variant="h6">Uploaded PGs</Typography>
                             <Typography>{counts.uploadedPGCount}</Typography>
                         </Paper>
@@ -177,7 +197,7 @@ export const OwnerDashboard = () => {
                     <ListItem button onClick={handleProfileClick}>
                         <ListItemText primary="Profile" />
                     </ListItem>
-                    <ListItem button onClick={() => navigate("/user-dashboard/my-pgs")}>
+                    <ListItem button onClick={() => navigate("/owner-dashboard/my-pgs")}>
                         <ListItemText primary="My PGs" />
                     </ListItem>
                     <ListItem button onClick={handleAddPG}>
@@ -211,9 +231,15 @@ export const OwnerDashboard = () => {
                     <TextField label="Location" name="location" fullWidth required margin="normal" onChange={handleInputChange} />
                     <TextField label="Price" name="price" type="number" fullWidth required margin="normal" onChange={handleInputChange} />
                     <TextField label="Description" name="description" fullWidth multiline rows={3} margin="normal" onChange={handleInputChange} />
-                    <TextField label="Amenities" name="amenities" fullWidth margin="normal" onChange={handleInputChange} />
-                    <TextField label="Images" name="images" fullWidth margin="normal" onChange={handleInputChange} />
+                    <TextField label="Amenities (comma separated)" name="amenities" fullWidth margin="normal" onChange={handleInputChange} />
                     <TextField label="Contact" name="contact" fullWidth required margin="normal" onChange={handleInputChange} />
+
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        style={{ marginTop: "1rem" }}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog}>Cancel</Button>

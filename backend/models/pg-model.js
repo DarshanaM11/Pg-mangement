@@ -18,13 +18,12 @@ const pgSchema = new mongoose.Schema({
         required: true,
     },
     amenities: {
-        type: [String], // Array of amenities
+        type: [String],
         required: true,
     },
-    images: {
-        type: [String], // Store image URLs
-        required: true,
-    },
+    images: [{
+        type: String,
+    }],
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -34,17 +33,17 @@ const pgSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    approved: {
-        type: Boolean,
-        default: false, // Admin approval required
+    status: {
+        type: String,
+        enum: ["pending", "approved", "rejected"],
+        default: "pending"
     },
     bookedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User", // Only one user can book a PG
+        ref: "User",
         default: null,
     },
-    requests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Store user IDs who requested booking
-
+    requests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
 }, { timestamps: true });
 
 const PG = mongoose.model("PG", pgSchema);

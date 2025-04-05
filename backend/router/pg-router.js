@@ -1,29 +1,39 @@
 const express = require("express");
-const { addPG, getApprovedPGs, getOwnerPGs, approvePG, deletePG, requestPG,updatePG } = require("../controllers/pg-controller");
+const {
+    uploadPGImage,
+    addPG,
+    getApprovedPGs,
+    getOwnerPGs,
+    approvePG,
+    deletePG,
+    requestPG,
+    updatePG
+} = require("../controllers/pg-controller");
 const authMiddleware = require("../middlewares/auth-middleware");
+const upload = require("../middlewares/multer");
+
 
 const router = express.Router();
 
-// Owner uploads a PG
-router.post("/add", authMiddleware, addPG);
+// Owner uploads a PG with image
+router.post("/add", authMiddleware, uploadPGImage, addPG);
 
-// Fetch all approved PGs (For users)
+// Fetch all approved PGs (for users)
 router.get("/listings", getApprovedPGs);
 
 // Owner fetches their own PG listings
 router.get("/owner-listings", authMiddleware, getOwnerPGs);
 
-// Admin approves/rejects PG
+// Admin approves or rejects a PG
 router.put("/approve/:pgId", authMiddleware, approvePG);
 
-// Owner deletes a PG (approved or not)
+// Owner deletes a PG
 router.delete("/delete/:pgId", authMiddleware, deletePG);
 
 // User requests to book a PG
 router.post("/request/:pgId", authMiddleware, requestPG);
 
-// ✅ Update PG by owner
-router.put("/update/:pgId", authMiddleware, updatePG);
-
+// Owner updates PG details
+router.put("/update/:pgId", authMiddleware,upload.array("images"), updatePG);
 
 module.exports = router;
