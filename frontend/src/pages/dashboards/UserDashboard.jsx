@@ -18,10 +18,14 @@ export const UserDashboard = () => {
     const [pgs, setPgs] = useState([]);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [profileModalOpen, setProfileModalOpen] = useState(false);
+
+    const [userData, setUserData] = useState(null);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         fetchApprovedPGs();
+        fetchUserProfile();
     }, []);
 
     const fetchApprovedPGs = async () => {
@@ -43,7 +47,27 @@ export const UserDashboard = () => {
         }
     };
 
+    const fetchUserProfile = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch("http://localhost:5001/api/user/profile", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
+            const data = await res.json();
+            if (res.ok) {
+                setUserData(data);
+                
+            } else {
+                console.error("Failed to fetch profile:", data.message);
+            }
+        } catch (error) {
+            console.error("Error fetching profile:", error);
+        }
+    };
 
     const handleDrawerItemClick = (label) => {
         setDrawerOpen(false);
@@ -109,14 +133,17 @@ export const UserDashboard = () => {
                     <Typography variant="h6" component="h2">
                         User Profile
                     </Typography>
-                    <Typography sx={{ mt: 2 }}>
-                        {/* Replace this with dynamic user data */}
-                        Username: John Doe
-                        <br />
-                        Email: johndoe@example.com
-                        <br />
-                        Phone: 9876543210
-                    </Typography>
+                    {userData ? (
+                        <Typography sx={{ mt: 2 }}>
+                            Username: {userData.username}
+                            <br />
+                            Email: {userData.email}
+                            <br />
+                            Phone: {userData.phone}
+                        </Typography>
+                    ) : (
+                        <Typography sx={{ mt: 2 }}>No user data available</Typography>
+                    )}
                 </Box>
             </Modal>
 

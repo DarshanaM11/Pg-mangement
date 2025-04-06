@@ -168,12 +168,17 @@ const requestPG = async (req, res) => {
             return res.status(400).json({ message: "This PG is already booked" });
         }
 
-        pg.bookedBy = req.user._id;
+        if (pg.requests.includes(req.user._id)) {
+            return res.status(400).json({ message: "You already requested this PG" });
+        }
+
+        pg.requests.push(req.user._id);
         await pg.save();
 
         res.status(200).json({ message: "PG booking request sent successfully" });
 
     } catch (error) {
+        console.error("Error requesting PG:", error);
         res.status(500).json({ message: "Error requesting PG", error });
     }
 };
@@ -280,6 +285,75 @@ const getAvailableApprovedPGs = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+// – Owner sees user requests on their PGs
+const getRequestedPGsForOwner = async (req, res) => {
+    try {
+        if (req.user.role !== "owner") {
+            return res.status(403).json({ message: "Only owners can view requests" });
+        }
+
+        const pgs = await PG.find({
+            owner: req.user._id,
+            requests: { $exists: true, $not: { $size: 0 } }
+        }).populate("requests", "name email phone"); // adjust user fields as needed
+
+        res.status(200).json(pgs);
+    } catch (error) {
+        console.error("Error fetching requested PGs:", error);
+        res.status(500).json({ message: "Error fetching requested PGs", error });
+    }
+};
+//Owner approves a specific user request
+
+const approvePGRequest = async (req, res) => {
+    try {
+        if (req.user.role !== "owner") {
+            return res.status(403).json({ message: "Only owners can approve PG requests" });
+        }
+
+        const { pgId, userId } = req.params;
+        const pg = await PG.findById(pgId);
+
+        if (!pg) return res.status(404).json({ message: "PG not found" });
+        if (pg.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: "You can only approve your own PGs" });
+        }
+
+        if (pg.bookedBy) {
+            return res.status(400).json({ message: "PG already booked" });
+        }
+
+        if (!pg.requests.includes(userId)) {
+            return res.status(400).json({ message: "User has not requested this PG" });
+        }
+
+        pg.bookedBy = userId;
+        pg.requests = []; // clear requests
+        await pg.save();
+
+        res.status(200).json({ message: "PG request approved successfully" });
+
+    } catch (error) {
+        console.error("Error approving PG request:", error);
+        res.status(500).json({ message: "Error approving PG request", error });
+    }
+};
+
+const getOwnerPGsWithUserData = async (req, res) => {
+    try {
+        if (req.user.role !== "owner") {
+            return res.status(403).json({ message: "Only owners can view their PGs" });
+        }
+
+        const ownerPGs = await PG.find({ owner: req.user._id })
+            .populate('requests', 'username email phone')
+            .populate('bookedBy', 'username email phone');
+
+        res.status(200).json(ownerPGs);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching PGs with user data", error });
+    }
+};
 
 
 
@@ -299,4 +373,7 @@ module.exports = {
     getOwnerApprovedPGs,
     getPGById,
     getAvailableApprovedPGs,
+    getRequestedPGsForOwner,
+    approvePGRequest,
+    getOwnerPGsWithUserData
 };

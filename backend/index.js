@@ -6,6 +6,7 @@ const router = require('./router/auth-router');
 const pgRoutes = require('./router/pg-router')
 const adminRoutes = require('./router/admin-router')
 const ownerRoutes = require('./router/owner-router')
+const userRoutes = require('./router/user-router')
 const errorMiddleware = require('./middlewares/error-middleware');
 const path = require("path");
 
@@ -25,6 +26,8 @@ app.use("/", router);
 app.use("/api/pg", pgRoutes);  // ✅ This means all PG routes start with /api/pg
 app.use("/api/admin", adminRoutes)
 app.use("/api/owner", ownerRoutes)
+app.use("/api/user", userRoutes)
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(errorMiddleware)

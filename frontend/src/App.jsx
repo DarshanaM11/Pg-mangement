@@ -8,7 +8,12 @@ import { Login } from "./pages/auths/Login";
 import { UserDashboard } from "./pages/dashboards/UserDashboard";
 import { OwnerDashboard } from "./pages/dashboards/OwnerDashboard";
 import PgDetails from "./pages/user/PgDetails";
+import { RequestedPGs } from "./pages/user/RequestedPGs";
+import { BookedPG } from "./pages/user/BookedPG";
+import { Wishlist } from "./pages/user/Wishlist";
 import { MyPGs } from "./pages/owner/MyPGs";
+import UserRequestedPGs from "./pages/owner/UserRequestedPGs";
+import UserApprovedPGs from "./pages/owner/UserApprovedPGs";
 import ApprovedPGListOfOwner from "./pages/owner/ApprovedPGList";
 import { AdminDashboard } from "./pages/dashboards/AdminDashboard";
 import OwnerList from "./pages/admin/OwnerList";
@@ -56,6 +61,9 @@ const App = () => {
                     {/* User Dashboard */}
                     <Route path="/user-dashboard" element={<ProtectedRoute element={<UserDashboard />} allowedRoles={["user"]} />} />
                     <Route path="/pg/:id" element={<ProtectedRoute element={<PgDetails />} allowedRoles={["user"]} />} />
+                    <Route path="/user/requested-pgs" element={<ProtectedRoute element={<RequestedPGs />} allowedRoles={["user"]} />} />
+                    <Route path="/user/booked-pg" element={<ProtectedRoute element={<BookedPG />} allowedRoles={["user"]} />} />
+                    <Route path="/user/wishlist" element={<ProtectedRoute element={<Wishlist />} allowedRoles={["user"]} />} />
 
 
 
@@ -63,6 +71,9 @@ const App = () => {
                     <Route path="/owner-dashboard" element={<ProtectedRoute element={<OwnerDashboard />} allowedRoles={["owner"]} />} />
                     <Route path="/owner-dashboard/my-pgs" element={<ProtectedRoute element={<MyPGs />} allowedRoles={["owner"]} />} />
                     <Route path="/owner-dashboard/approved-pgs" element={<ProtectedRoute element={<ApprovedPGListOfOwner />} allowedRoles={["owner"]} />} />
+                    <Route path="/owner-dashboard/user-requested-pgs" element={<ProtectedRoute element={<UserRequestedPGs />} allowedRoles={["owner"]} />} />
+                    <Route path="/owner-dashboard/user-approved-pgs" element={<ProtectedRoute element={<UserApprovedPGs />} allowedRoles={["owner"]} />} />
+
 
 
 

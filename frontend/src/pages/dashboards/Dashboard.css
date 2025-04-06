@@ -12,7 +12,8 @@
 /* Grid layout for cards */
 .card-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 cards per row */
     gap: 40px;
     margin-top: 40px;
     background-color: #3946a958;
@@ -76,6 +77,7 @@
     max-width: 400px;
     margin-bottom: 30px;
 }
+
 .user-dashboard-container {
     position: relative;
     margin-top: 50px;
@@ -84,9 +86,12 @@
 .user-dashboard {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    padding: 80px 20px 20px;
+    gap: 20px;
+    padding: 20px;
+    margin-left: 240px;
+    /* space for the sidebar */
 }
+
 .menu-icon {
     position: fixed;
     top: 16px;
@@ -94,15 +99,16 @@
     z-index: 1000;
     color: #333;
 }
+
 .pg-card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin: 16px;
-    padding: 10px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     width: 300px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: 0.3s;
 }
+
 .pg-card:hover {
     transform: scale(1.02);
 }
@@ -114,16 +120,18 @@
 }
 
 .pg-details {
-    margin-top: 10px;
+    padding: 16px;
 }
 
 .pg-details h3 {
     font-size: 1.2rem;
     margin: 10px 0;
 }
+
 .pg-details p {
     margin: 5px 0;
 }
+
 .view-button {
     margin-top: 10px;
     padding: 8px 16px;

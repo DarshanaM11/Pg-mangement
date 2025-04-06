@@ -11,6 +11,9 @@ const {
     getOwnerApprovedPGs,
     getPGById,
     getAvailableApprovedPGs,
+    getRequestedPGsForOwner,
+    approvePGRequest,
+    getOwnerPGsWithUserData
 } = require("../controllers/pg-controller");
 const authMiddleware = require("../middlewares/auth-middleware");
 const upload = require("../middlewares/multer");
@@ -43,10 +46,14 @@ router.put("/update/:pgId", authMiddleware, upload.array("images"), updatePG);
 router.get('/owner/approved', authMiddleware, getOwnerApprovedPGs);
 router.get("/available-approved", authMiddleware, getAvailableApprovedPGs);
 
+router.get('/owner-listings-with-users', authMiddleware, getOwnerPGsWithUserData);
 
 router.get("/:id", authMiddleware, getPGById);
 
-//available approved pgs
+router.get("/owner/requests", authMiddleware, getRequestedPGsForOwner);
+router.post("/owner/approve/:pgId/:userId", authMiddleware, approvePGRequest);
+
+
 
 
 module.exports = router;

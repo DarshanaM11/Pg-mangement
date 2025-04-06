@@ -11,6 +11,7 @@ const PgDetails = () => {
     const [pg, setPg] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isRequested, setIsRequested] = useState(false);
+    const [isWishlisted, setIsWishlisted] = useState(false);
 
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
@@ -35,6 +36,18 @@ const PgDetails = () => {
             if (userId && data.requests?.includes(userId)) {
                 setIsRequested(true);
             }
+
+            // Check if this PG is in the user's wishlist
+            const wishlistRes = await fetch("http://localhost:5001/api/user/wishlist", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const wishlistData = await wishlistRes.json();
+            const isInWishlist = wishlistData.some(pgItem => pgItem._id === data._id);
+            setIsWishlisted(isInWishlist);
 
         } catch (error) {
             console.error("Error fetching PG details:", error);
@@ -70,6 +83,53 @@ const PgDetails = () => {
             }
         } catch (err) {
             console.error("Error requesting booking:", err);
+            toast.error("Something went wrong.");
+        }
+    };
+
+    const handleAddToWishlist = async () => {
+        try {
+            const res = await fetch(`http://localhost:5001/api/user/wishlist/${pg._id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                toast.success("Added to wishlist!");
+                setIsWishlisted(true);
+            } else {
+                toast.error(data.message || "Failed to add to wishlist.");
+            }
+        } catch (err) {
+            console.error("Error adding to wishlist:", err);
+            toast.error("Something went wrong.");
+        }
+    };
+
+    const handleRemoveFromWishlist = async () => {
+        try {
+            const res = await fetch(`http://localhost:5001/api/user/wishlist/${pg._id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                toast.success("Removed from wishlist!");
+                setIsWishlisted(false);
+            } else {
+                toast.error(data.message || "Failed to remove from wishlist.");
+            }
+        } catch (err) {
+            console.error("Error removing from wishlist:", err);
             toast.error("Something went wrong.");
         }
     };
@@ -120,6 +180,16 @@ const PgDetails = () => {
                 ) : (
                     <button className="book-button" onClick={handleBookingRequest}>
                         Request to Book PG
+                    </button>
+                )}
+
+                {isWishlisted ? (
+                    <button className="wishlist-button remove" onClick={handleRemoveFromWishlist}>
+                        Remove from Wishlist
+                    </button>
+                ) : (
+                    <button className="wishlist-button" onClick={handleAddToWishlist}>
+                        Add to Wishlist
                     </button>
                 )}
             </div>
