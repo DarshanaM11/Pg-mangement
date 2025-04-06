@@ -232,6 +232,28 @@ const updatePG = async (req, res) => {
     }
 };
 
+// ======================
+// Owner fetches their approved PGs
+// ======================
+
+const getOwnerApprovedPGs = async (req, res) => {
+    try {
+        if (req.user.role !== "owner") {
+            return res.status(403).json({ message: "Only owners can view their approved PGs" });
+        }
+
+        const approvedPGs = await PG.find({
+            owner: req.user._id,
+            status: "approved",
+        });
+
+        res.status(200).json(approvedPGs);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching approved PGs", error });
+    }
+};
+
+
 
 // ======================
 // Export All Controllers
@@ -246,4 +268,5 @@ module.exports = {
     deletePG,
     requestPG,
     updatePG,
+    getOwnerApprovedPGs
 };

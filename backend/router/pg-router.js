@@ -7,7 +7,8 @@ const {
     approvePG,
     deletePG,
     requestPG,
-    updatePG
+    updatePG,
+    getOwnerApprovedPGs
 } = require("../controllers/pg-controller");
 const authMiddleware = require("../middlewares/auth-middleware");
 const upload = require("../middlewares/multer");
@@ -35,5 +36,9 @@ router.post("/request/:pgId", authMiddleware, requestPG);
 
 // Owner updates PG details
 router.put("/update/:pgId", authMiddleware,upload.array("images"), updatePG);
+
+// Owner fetches their approved PGs
+router.get('/owner/approved', authMiddleware, getOwnerApprovedPGs);
+
 
 module.exports = router;

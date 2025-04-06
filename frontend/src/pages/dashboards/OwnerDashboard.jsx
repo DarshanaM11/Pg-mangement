@@ -27,6 +27,7 @@ export const OwnerDashboard = () => {
         userRequestPGCount: 0,
         userApprovedPGCount: 0,
     });
+    console.log("counts", counts)
     const [loading, setLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -46,7 +47,6 @@ export const OwnerDashboard = () => {
 
     useEffect(() => {
         fetchOwnerStats();
-        // fetchOwnerInfo();
     }, []);
 
     const handleInputChange = (e) => {
@@ -74,28 +74,25 @@ export const OwnerDashboard = () => {
             if (!response.ok) throw new Error("Failed to fetch owner stats");
 
             const data = await response.json();
-            setCounts(data);
+
+            // Calculate counts
+            const uploadedPGCount = data?.length;
+            const approvedPGCount = data?.filter(pg => pg.status === "approved").length;
+            const userRequestPGCount = data?.filter(pg => pg.requests && pg.requests.length > 0).length;
+            const userApprovedPGCount = data?.filter(pg => pg.bookedBy !== null).length;
+
+            setCounts({
+                uploadedPGCount,
+                approvedPGCount,
+                userRequestPGCount,
+                userApprovedPGCount
+            });
         } catch {
             toast.error("Failed to fetch PG stats.");
         } finally {
             setLoading(false);
         }
     };
-
-    // const fetchOwnerInfo = async () => {
-    //     try {
-    //         const response = await fetch("http://localhost:5001/api/owner/info", {
-    //             method: "GET",
-    //             headers: { "Authorization": `Bearer ${token}` },
-    //         });
-    //         if (!response.ok) throw new Error("Failed to fetch owner info");
-
-    //         const data = await response.json();
-    //         setOwnerInfo(data);
-    //     } catch {
-    //         toast.error("Failed to fetch owner info.");
-    //     }
-    // };
 
     const handleCardClick = (type) => {
         navigate(`/owner-dashboard/${type}`);
@@ -111,40 +108,38 @@ export const OwnerDashboard = () => {
 
     const handleAddPGSubmit = async (e) => {
         e.preventDefault();
-    
-        if (!newPG.name || !newPG.location || !newPG.price || !newPG.contact ) {
+
+        if (!newPG.name || !newPG.location || !newPG.price || !newPG.contact) {
             toast.error("Name, location, price and contact are required!");
             return;
         }
-    
+
         const formData = new FormData();
         formData.append("name", newPG.name);
         formData.append("location", newPG.location);
         formData.append("price", newPG.price);
         formData.append("description", newPG.description);
-    
-        // ✅ Ensure amenities is sent as JSON string (array of strings)
+
         const amenityArray = newPG.amenities
             ? newPG.amenities.split(",").map((a) => a.trim())
             : [];
         formData.append("amenities", JSON.stringify(amenityArray));
-    
+
         formData.append("contact", newPG.contact);
         formData.append("image", newPG.image);
-    
+
         try {
             const response = await fetch("http://localhost:5001/api/pg/add", {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`
-                    // ❌ DO NOT set Content-Type here (fetch with FormData handles it automatically)
                 },
                 body: formData
             });
-    
+
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || "Failed to add PG");
-    
+
             toast.success(result.message || "PG added successfully!");
             setOpenDialog(false);
             navigate("/owner-dashboard/my-pgs");
@@ -152,9 +147,22 @@ export const OwnerDashboard = () => {
             toast.error(error.message || "Failed to add PG.");
         }
     };
-    
-    const handleProfileClick = () => {
-        setOwnerInfo(ownerInfo);
+
+    const handleProfileClick = async () => {
+        setSidebarOpen(false)
+        try {
+            const response = await fetch("http://localhost:5001/api/owner/profile", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) throw new Error("Failed to fetch owner info");
+            const data = await response.json();
+            setOwnerInfo(data);
+        } catch (error) {
+            toast.error("Could not load profile info.", error);
+        }
     };
 
     return (
@@ -173,42 +181,59 @@ export const OwnerDashboard = () => {
                 ) : (
                     <div className="card-container">
                         <Paper className="dashboard-card" onClick={() => handleCardClick("my-pgs")}>
-                            <Typography variant="h6">Uploaded PGs</Typography>
-                            <Typography>{counts.uploadedPGCount}</Typography>
+                            <div className="card-header">
+                                <Typography variant="h4">Uploaded PGs</Typography>
+                                <div className="count-badge">{counts.uploadedPGCount}</div>
+                            </div>
                         </Paper>
                         <Paper className="dashboard-card" onClick={() => handleCardClick("approved-pgs")}>
-                            <Typography variant="h6">Approved PGs</Typography>
-                            <Typography>{counts.approvedPGCount}</Typography>
+                            <div className="card-header">
+                                <Typography variant="h4">Approved PGs</Typography>
+                                <div className="count-badge">{counts.approvedPGCount}</div>
+                            </div>
                         </Paper>
                         <Paper className="dashboard-card" onClick={() => handleCardClick("user-requested-pgs")}>
-                            <Typography variant="h6">User Requested PGs</Typography>
-                            <Typography>{counts.userRequestPGCount}</Typography>
+                            <div className="card-header">
+                                <Typography variant="h4">User Requested PGs</Typography>
+                                <div className="count-badge">{counts.userRequestPGCount}</div>
+                            </div>
                         </Paper>
                         <Paper className="dashboard-card" onClick={() => handleCardClick("user-approved-pgs")}>
-                            <Typography variant="h6">User Approved PGs</Typography>
-                            <Typography>{counts.userApprovedPGCount}</Typography>
+                            <div className="card-header">
+                                <Typography variant="h4">User Approved PGs</Typography>
+                                <div className="count-badge">{counts.userApprovedPGCount}</div>
+                            </div>
                         </Paper>
                     </div>
                 )}
             </div>
 
-            <Drawer anchor="right" open={sidebarOpen} onClose={() => setSidebarOpen(false)}>
+            <Drawer
+                anchor="right"
+                open={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+                PaperProps={{
+                    sx: { width: 300 } // you can adjust this to 350 or 400 as per your design
+                }}
+            >
                 <List>
                     <ListItem button onClick={handleProfileClick}>
-                        <ListItemText primary="Profile" />
+                        <ListItemText primary="Profile" primaryTypographyProps={{ fontSize: 18 }} />
                     </ListItem>
                     <ListItem button onClick={() => navigate("/owner-dashboard/my-pgs")}>
-                        <ListItemText primary="My PGs" />
+                        <ListItemText primary="My PGs" primaryTypographyProps={{ fontSize: 18 }} />
                     </ListItem>
                     <ListItem button onClick={handleAddPG}>
-                        <ListItemText primary="Add PG" />
+                        <ListItemText primary="Add PG" primaryTypographyProps={{ fontSize: 18 }} />
                     </ListItem>
                 </List>
             </Drawer>
 
+
             <Dialog open={ownerInfo !== null} onClose={() => setOwnerInfo(null)}>
-                <DialogTitle>Owner Profile</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ fontSize: "1.5rem", padding: "20px 24px" }}>
+                    Owner Profile</DialogTitle>
+                    <DialogContent sx={{ padding: "24px" }}>
                     {ownerInfo ? (
                         <>
                             <Typography>Name: {ownerInfo.name}</Typography>
@@ -233,7 +258,6 @@ export const OwnerDashboard = () => {
                     <TextField label="Description" name="description" fullWidth multiline rows={3} margin="normal" onChange={handleInputChange} />
                     <TextField label="Amenities (comma separated)" name="amenities" fullWidth margin="normal" onChange={handleInputChange} />
                     <TextField label="Contact" name="contact" fullWidth required margin="normal" onChange={handleInputChange} />
-
                     <input
                         type="file"
                         accept="image/*"

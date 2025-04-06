@@ -8,6 +8,7 @@ import { Login } from "./pages/auths/Login";
 import { UserDashboard } from "./pages/dashboards/UserDashboard";
 import { OwnerDashboard } from "./pages/dashboards/OwnerDashboard";
 import { MyPGs } from "./pages/owner/MyPGs";
+import ApprovedPGListOfOwner from "./pages/owner/ApprovedPGList";
 import { AdminDashboard } from "./pages/dashboards/AdminDashboard";
 import OwnerList from "./pages/admin/OwnerList";
 import UserList from "./pages/admin/UserList";
@@ -57,14 +58,17 @@ const App = () => {
                     {/* Owner Dashboard */}
                     <Route path="/owner-dashboard" element={<ProtectedRoute element={<OwnerDashboard />} allowedRoles={["owner"]} />} />
                     <Route path="/owner-dashboard/my-pgs" element={<ProtectedRoute element={<MyPGs />} allowedRoles={["owner"]} />} />
+                    <Route path="/owner-dashboard/approved-pgs" element={<ProtectedRoute element={<ApprovedPGListOfOwner />} allowedRoles={["owner"]} />} />
+
+
 
                     {/* Admin Dashboard and Subpages */}
                     <Route path="/admin-dashboard" element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={["admin"]} />} />
                     <Route path="/admin-dashboard/owners" element={<ProtectedRoute element={<OwnerList />} allowedRoles={["admin"]} />} />
                     <Route path="/admin-dashboard/users" element={<ProtectedRoute element={<UserList />} allowedRoles={["admin"]} />} />
                     <Route path="/admin-dashboard/pending-pgs" element={<ProtectedRoute element={<PendingPGList />} allowedRoles={["admin"]} />} />
-                    <Route path="/admin-dashboard/approved-pgs"element={<ApprovedPGList element={<ApprovedPGList />} allowedRoles={["admin"]} />} />
-                    <Route path="/admin-dashboard/rejected-pgs"element={<RejectedPGList element={<RejectedPGList />} allowedRoles={["admin"]} />} />
+                    <Route path="/admin-dashboard/approved-pgs" element={<ProtectedRoute element={<ApprovedPGList />} allowedRoles={["admin"]} />} />
+                    <Route path="/admin-dashboard/rejected-pgs" element={<ProtectedRoute element={<RejectedPGList />} allowedRoles={["admin"]} />} />
 
                 </Routes>
                 <ToastContainer position="top-right" autoClose={3000} />

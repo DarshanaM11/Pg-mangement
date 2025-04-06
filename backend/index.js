@@ -5,6 +5,7 @@ const connectDB = require('./utils/db');  // Import the DB connection function
 const router = require('./router/auth-router');
 const pgRoutes = require('./router/pg-router')
 const adminRoutes = require('./router/admin-router')
+const ownerRoutes = require('./router/owner-router')
 const errorMiddleware = require('./middlewares/error-middleware');
 const path = require("path");
 
@@ -23,6 +24,7 @@ const port = process.env.PORT || 5001;
 app.use("/", router);
 app.use("/api/pg", pgRoutes);  // ✅ This means all PG routes start with /api/pg
 app.use("/api/admin", adminRoutes)
+app.use("/api/owner", ownerRoutes)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(errorMiddleware)
