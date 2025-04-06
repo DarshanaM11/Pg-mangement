@@ -253,6 +253,34 @@ const getOwnerApprovedPGs = async (req, res) => {
     }
 };
 
+const getPGById = async (req, res) => {
+    try {
+        const pg = await PG.findById(req.params.id);
+        if (!pg) {
+            return res.status(404).json({ message: "PG not found" });
+        }
+        res.status(200).json(pg);
+    } catch (err) {
+        console.error("Error fetching PG by ID:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+// GET approved PGs that are not booked
+const getAvailableApprovedPGs = async (req, res) => {
+    try {
+        const pgs = await PG.find({
+            status: "approved",        // Approved PGs only
+            bookedBy: null            // Not yet booked
+        }).populate("owner", "name email phone");
+
+        res.status(200).json(pgs);
+    } catch (error) {
+        console.error("Error fetching available PGs:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 
 
 // ======================
@@ -268,5 +296,7 @@ module.exports = {
     deletePG,
     requestPG,
     updatePG,
-    getOwnerApprovedPGs
+    getOwnerApprovedPGs,
+    getPGById,
+    getAvailableApprovedPGs,
 };

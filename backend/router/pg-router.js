@@ -8,7 +8,9 @@ const {
     deletePG,
     requestPG,
     updatePG,
-    getOwnerApprovedPGs
+    getOwnerApprovedPGs,
+    getPGById,
+    getAvailableApprovedPGs,
 } = require("../controllers/pg-controller");
 const authMiddleware = require("../middlewares/auth-middleware");
 const upload = require("../middlewares/multer");
@@ -35,10 +37,16 @@ router.delete("/delete/:pgId", authMiddleware, deletePG);
 router.post("/request/:pgId", authMiddleware, requestPG);
 
 // Owner updates PG details
-router.put("/update/:pgId", authMiddleware,upload.array("images"), updatePG);
+router.put("/update/:pgId", authMiddleware, upload.array("images"), updatePG);
 
 // Owner fetches their approved PGs
 router.get('/owner/approved', authMiddleware, getOwnerApprovedPGs);
+router.get("/available-approved", authMiddleware, getAvailableApprovedPGs);
+
+
+router.get("/:id", authMiddleware, getPGById);
+
+//available approved pgs
 
 
 module.exports = router;

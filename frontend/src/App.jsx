@@ -7,6 +7,7 @@ import { Register } from "./pages/auths/Register";
 import { Login } from "./pages/auths/Login";
 import { UserDashboard } from "./pages/dashboards/UserDashboard";
 import { OwnerDashboard } from "./pages/dashboards/OwnerDashboard";
+import PgDetails from "./pages/user/PgDetails";
 import { MyPGs } from "./pages/owner/MyPGs";
 import ApprovedPGListOfOwner from "./pages/owner/ApprovedPGList";
 import { AdminDashboard } from "./pages/dashboards/AdminDashboard";
@@ -54,6 +55,9 @@ const App = () => {
 
                     {/* User Dashboard */}
                     <Route path="/user-dashboard" element={<ProtectedRoute element={<UserDashboard />} allowedRoles={["user"]} />} />
+                    <Route path="/pg/:id" element={<ProtectedRoute element={<PgDetails />} allowedRoles={["user"]} />} />
+
+
 
                     {/* Owner Dashboard */}
                     <Route path="/owner-dashboard" element={<ProtectedRoute element={<OwnerDashboard />} allowedRoles={["owner"]} />} />
