@@ -1,0 +1,54 @@
+.mypgs-layout {
+    padding: 24px;
+}
+
+.title {
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.pg-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.pg-card {
+    width: 320px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.pg-info {
+    flex-grow: 1;
+}
+
+.pg-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.approved {
+    color: green;
+    font-weight: bold;
+}
+
+.pending {
+    color: rgb(255, 183, 0);
+    font-weight: bold;
+}
+.rejected{
+    color: red;
+    font-weight: bold;
+}
+
+.loading-spinner {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+}

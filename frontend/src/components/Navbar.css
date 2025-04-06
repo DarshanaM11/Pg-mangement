@@ -1,0 +1,97 @@
+/* Navbar Styles */
+
+/* Default Navbar Styling */
+.navbar {
+    background: linear-gradient(135deg, #28374e, #605e86, #3a3a75) !important;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Transparent Navbar for Home Page */
+.navbar.transparent {
+    background: unset !important;  /* Removes the gradient properly */
+    box-shadow: none;
+}
+
+/* Navbar Content */
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+/* Logo */
+.logo {
+    font-size: 1.8rem !important;
+    font-weight: bold;
+    color: white;
+}
+
+/* Navigation Links */
+.nav-links {
+    display: flex;
+    padding: 1.2vw;
+    gap: 2rem;
+    list-style: none;
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%);
+    background-color: #6480cd3d;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: white;
+    font-size: 1.1vw;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+    color: #ffcc00;
+}
+
+/* Auth & Dashboard Buttons */
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Dashboard Buttons */
+.auth-buttons .MuiButton-contained {
+    background-color: #ffcc00 !important;
+    color: black !important;
+    font-size: 0.9vw !important;
+    padding: 0.5rem 1rem !important;
+}
+
+/* Logout Button */
+.auth-buttons .MuiButton-outlined {
+    border-color: white !important;
+    color: white !important;
+    font-size: 0.9vw !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.auth-buttons .MuiButton-outlined:hover {
+    background-color: white !important;
+    color: black !important;
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+    .navbar-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        clip-path: none;
+        background-color: transparent;
+        padding: 0;
+    }
+
+    .auth-buttons {
+        margin-top: 1rem;
+    }
+}

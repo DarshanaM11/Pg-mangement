@@ -1,0 +1,78 @@
+.dashboard-layout {
+    position: relative;
+    padding: 20px;
+}
+
+.upper {
+    display: flex;
+    margin-top: 4vw;
+    justify-content: flex-end;
+}
+
+/* Grid layout for cards */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+    gap: 40px;
+    margin-top: 40px;
+    background-color: #3946a958;
+    padding: 10px;
+}
+
+.dashboard-card {
+    padding: 40px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card:hover {
+    transform: scale(1.05);
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Flex layout inside each card for title + count */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Circular badge styling */
+.count-badge {
+    background-color: #3946a958;
+    color: rgb(67, 65, 65);
+    font-weight: bold;
+    font-size: 1.2vw;
+    width: 10%;
+    height: 60px;
+    border-radius: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Optional: spinner style */
+.loading-spinner {
+    margin: 2rem auto;
+    display: block;
+}
+
+/* Sidebar layout (optional) */
+.admin-dashboard-container {
+    display: flex;
+}
+
+.admin-dashboard-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.chart-container {
+    max-width: 400px;
+    margin-bottom: 30px;
+}
