@@ -6,7 +6,7 @@
 .upper {
     display: flex;
     margin-top: 4vw;
-    justify-content: flex-end;
+    justify-content:space-between;
 }
 
 /* Grid layout for cards */

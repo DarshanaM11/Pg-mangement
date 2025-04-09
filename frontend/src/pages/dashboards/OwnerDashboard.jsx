@@ -168,6 +168,11 @@ export const OwnerDashboard = () => {
     return (
         <div className="dashboard-layout">
             <div className="upper">
+                <div style={{ padding: '1vw' }}>
+                    <Button variant="contained" sx={{ fontSize: "0.7vw" }} onClick={handleAddPG}>
+                        Add Pg
+                    </Button>
+                </div>
                 <div>
                     <IconButton onClick={() => setSidebarOpen(true)}>
                         <MenuIcon sx={{ fontSize: 30 }} />
@@ -217,14 +222,17 @@ export const OwnerDashboard = () => {
                 }}
             >
                 <List>
+                    <ListItem >
+                        <ListItemText primary="Owner Darshboard" primaryTypographyProps={{ fontSize: 25,display:'flex',alignItems:'center' }} />
+                    </ListItem>
                     <ListItem button onClick={handleProfileClick}>
-                        <ListItemText primary="Profile" primaryTypographyProps={{ fontSize: 18 }} />
+                        <ListItemText primary="Profile" primaryTypographyProps={{ fontSize: 18, ml: 2 }} />
                     </ListItem>
                     <ListItem button onClick={() => navigate("/owner-dashboard/my-pgs")}>
-                        <ListItemText primary="My PGs" primaryTypographyProps={{ fontSize: 18 }} />
+                        <ListItemText primary="My PGs" primaryTypographyProps={{ fontSize: 18, ml: 2 }} />
                     </ListItem>
                     <ListItem button onClick={handleAddPG}>
-                        <ListItemText primary="Add PG" primaryTypographyProps={{ fontSize: 18 }} />
+                        <ListItemText primary="Add PG" primaryTypographyProps={{ fontSize: 18, ml: 2 }} />
                     </ListItem>
                 </List>
             </Drawer>
@@ -233,7 +241,7 @@ export const OwnerDashboard = () => {
             <Dialog open={ownerInfo !== null} onClose={() => setOwnerInfo(null)}>
                 <DialogTitle sx={{ fontSize: "1.5rem", padding: "20px 24px" }}>
                     Owner Profile</DialogTitle>
-                    <DialogContent sx={{ padding: "24px" }}>
+                <DialogContent sx={{ padding: "24px" }}>
                     {ownerInfo ? (
                         <>
                             <Typography>Name: {ownerInfo.name}</Typography>

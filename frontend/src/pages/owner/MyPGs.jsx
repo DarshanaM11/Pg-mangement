@@ -84,28 +84,45 @@ export const MyPGs = () => {
             formData.append("location", selectedPG.location);
             formData.append("price", selectedPG.price);
             formData.append("description", selectedPG.description || "");
-            formData.append("amenities", selectedPG.amenities);
+            const amenityArray = selectedPG.amenities
+                ? selectedPG.amenities.split(",").map((a) => a.trim())
+                : [];
+            formData.append("amenities", JSON.stringify(amenityArray));
+            formData.append("contact", selectedPG.contact);
+
             imageFiles.forEach((file) => {
-                formData.append("images", file); // ✅ match multer field name
+                formData.append("images", file);
             });
 
-            const response = await fetch(`http://localhost:5001/api/pg/update/${selectedPG._id}`, {
-                method: "PUT",
+
+            console.log("selectedPG._id", formData)
+
+            const url = selectedPG._id
+                ? `http://localhost:5001/api/pg/update/${selectedPG._id}`
+                : "http://localhost:5001/api/pg/add";
+            const method = selectedPG._id ? "PUT" : "POST";
+
+            const response = await fetch(url, {
+                method: method,
                 headers: {
+
                     "Authorization": `Bearer ${token}`,
                 },
                 body: formData,
             });
 
             const result = await response.json();
-            if (!response.ok) throw new Error(result.message || "Failed to update PG");
+            console.log("response", response)
+            if (!response.ok) throw new Error(result.message || "Failed to save PG");
 
-            toast.success(result.message || "PG updated successfully!");
+            toast.success(result.message || `PG ${selectedPG._id ? "updated" : "added"} successfully!`, {
+                toastId: "pg-success",
+            });
             setOpenDialog(false);
             setImageFiles([]);
             fetchMyPGs();
         } catch (error) {
-            toast.error(error.message || "Failed to update PG.");
+            toast.error(error.message || "Failed to save PG.");
         }
     };
 
@@ -132,7 +149,29 @@ export const MyPGs = () => {
 
     return (
         <div className="mypgs-layout">
-            <Typography variant="h4" className="title">My PGs</Typography>
+            {/* Header with Add PG button */}
+            <div className="mypgs-header">
+                <Typography variant="h4" className="title">My PGs</Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        setSelectedPG({
+                            name: "",
+                            location: "",
+                            price: "",
+                            description: "",
+                            amenities: "",
+                            contact: "",
+                            images: [],
+                        });
+                        setImageFiles([]);
+                        setOpenDialog(true);
+                    }}
+                >
+                    Add PG
+                </Button>
+            </div>
 
             {loading ? (
                 <CircularProgress className="loading-spinner" />
@@ -148,8 +187,12 @@ export const MyPGs = () => {
                                     <Typography>Location: {pg.location}</Typography>
                                     <Typography>Price: ₹{pg.price}</Typography>
                                     <Typography>
-                                        Status: <strong className={pg.status == "approved" ? "approved" : pg.status == "pending" ? "pending" : "rejected"}>
-                                            {pg.status == "approved" ? "Approved" : pg.status == "pending" ? "Pending" : "Rejected"}                                        </strong>
+                                        Status: <strong className={
+                                            pg.status === "approved" ? "approved" :
+                                                pg.status === "pending" ? "pending" : "rejected"
+                                        }>
+                                            {pg.status.charAt(0).toUpperCase() + pg.status.slice(1)}
+                                        </strong>
                                     </Typography>
                                 </div>
                                 <div className="pg-actions">
@@ -166,9 +209,9 @@ export const MyPGs = () => {
                 </div>
             )}
 
-            {/* Edit PG Dialog */}
+            {/* Add/Edit PG Dialog */}
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-                <DialogTitle>Edit PG</DialogTitle>
+                <DialogTitle>{selectedPG?._id ? "Edit PG" : "Add PG"}</DialogTitle>
                 <DialogContent>
                     {selectedPG && (
                         <>
@@ -215,8 +258,16 @@ export const MyPGs = () => {
                                 value={selectedPG.amenities}
                                 onChange={handleInputChange}
                             />
+                            <TextField
+                                label="Contact"
+                                name="contact"
+                                type="number"
+                                fullWidth
+                                margin="normal"
+                                value={selectedPG.contact}
+                                onChange={handleInputChange}
+                            />
 
-                            {/* Image File Upload */}
                             <input
                                 type="file"
                                 name="images"
@@ -226,8 +277,7 @@ export const MyPGs = () => {
                                 style={{ marginTop: "16px" }}
                             />
 
-                            {/* Image Previews */}
-                            {Array.isArray(selectedPG?.images) && selectedPG.images.filter(Boolean).length > 0 ? (
+                            {Array.isArray(selectedPG.images) && selectedPG.images.filter(Boolean).length > 0 ? (
                                 <div style={{ display: "flex", gap: "8px", marginTop: "16px", flexWrap: "wrap" }}>
                                     {selectedPG.images.map((imgUrl, index) => (
                                         <div
@@ -265,13 +315,14 @@ export const MyPGs = () => {
                                     No images uploaded.
                                 </Typography>
                             )}
-
                         </>
                     )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-                    <Button onClick={handleUpdatePG} variant="contained" color="primary">Update</Button>
+                    <Button onClick={handleUpdatePG} variant="contained" color="primary">
+                        {selectedPG?._id ? "Update" : "Add"}
+                    </Button>
                 </DialogActions>
             </Dialog>
 

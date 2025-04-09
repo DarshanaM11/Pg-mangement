@@ -1,5 +1,5 @@
 .mypgs-layout {
-    padding: 24px;
+    padding: 6%;
 }
 
 .title {
@@ -21,6 +21,13 @@
     align-items: flex-start;
     border: 1px solid #ccc;
     border-radius: 8px;
+}
+
+.mypgs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .pg-info {

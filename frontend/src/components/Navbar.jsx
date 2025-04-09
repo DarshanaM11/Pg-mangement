@@ -1,6 +1,7 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import "./Navbar.css";
+import '@fontsource/dancing-script';
 
 export const Navbar = () => {
     const location = useLocation();
@@ -26,25 +27,40 @@ export const Navbar = () => {
         >
             <Toolbar className="navbar-container">
                 {/* Logo */}
-                <Typography variant="h6" className="logo">
-                    FindOne
+                <Typography variant="h6" className="logo" sx={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => navigate("/")}>
+                    {isHome ?
+                        <p style={{ fontFamily: 'Dancing Script, cursive', fontSize: '2.5vw', marginTop: '1rem', color: "#c9d1d8", marginLeft: "2vw" }}>Roomora</p>
+                        :
+                        <>
+                            <img
+                                src="/images/logo.png"
+                                alt="Roomora Logo"
+                                style={{ height: "60px", marginRight: "0.2rem", marginLeft: "50px" }}
+                            />
+                            <p style={{ fontFamily: 'Dancing Script, cursive', fontSize: '2.5rem', marginTop: '1rem', color: "#c9d1d8" }}>Roomora</p>
+                        </>
+
+                    }
+
                 </Typography>
 
-                {/* Navigation Links */}
-                <nav className="cont">
-                    <ul className="nav-links">
-                        <NavLink to="/" className="nav-link">
-                            Home
-                        </NavLink>
-                        {["About", "Contact"].map((text, index) => (
-                            <li key={index}>
-                                <NavLink to={`/${text.toLowerCase()}`} className="nav-link">
-                                    {text}
-                                </NavLink>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
+                {/* Navigation Links */}{isHome &&
+                    <nav className="cont">
+                        <ul className="nav-links">
+                            <NavLink to="/" className="nav-link">
+                                Home
+                            </NavLink>
+                            {["About", "Contact"].map((text, index) => (
+                                <li key={index}>
+                                    <NavLink to={`/${text.toLowerCase()}`} className="nav-link">
+                                        {text}
+                                    </NavLink>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                }
+
 
                 {/* Role-Based Navigation */}
                 {token ? (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TextField, Button, Typography, Paper, Container } from "@mui/material";
-import { toast} from "react-toastify";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 
@@ -56,12 +56,10 @@ export const Login = ({ setUserRole }) => {  // Accept setUserRole as prop
     return (
         <div className="center">
             <div className="main">
-                <div className="left-section">
-                    <Typography variant="h3" className="welcome-text">Welcome Back!</Typography>
-                </div>
+
                 <div className="right-section">
-                    <Paper elevation={3} className="auth-container">
-                        <Container>
+                    <div className="auth-container">
+                        <div className="form">
                             <Typography variant="h4" className="auth-title">Login</Typography>
                             <form onSubmit={handleSubmit}>
                                 <TextField
@@ -86,15 +84,25 @@ export const Login = ({ setUserRole }) => {  // Accept setUserRole as prop
                                     onChange={handleChange}
                                     value={credentials.password}
                                 />
-                                <Button type="submit" variant="contained" color="primary" fullWidth className="auth-btn">
-                                    Login
-                                </Button>
+                                <div className="auth-footer">
+                                    <Button type="submit" variant="contained" color="primary" fullWidth className="auth-btn">
+                                        Login
+                                    </Button>
+                                </div>
+
                             </form>
                             <Typography className="auth-footer">
                                 Don't have an account? <a href="/register">Register</a>
                             </Typography>
-                        </Container>
-                    </Paper>
+                        </div>
+                    </div>
+                </div>
+                <div className="left-section">
+                    <img
+                        src="/images/login.png"
+                        alt="Roomora Logo"
+                        style={{ height: "50%", alignItems: "center", display: "flex" }}
+                    />
                 </div>
             </div>
         </div>

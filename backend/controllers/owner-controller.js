@@ -41,7 +41,7 @@ const approveBooking = async (req, res) => {
         }
 
         pg.bookedBy = userId;
-        pg.requests = []; // Clear all other requests
+        // pg.requests = []; // Clear all other requests
         await pg.save();
 
         res.status(200).json({ message: "PG booking approved successfully" });

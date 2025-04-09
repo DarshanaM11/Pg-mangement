@@ -2,27 +2,50 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 110vh;
+    /* Image and Blur */
+    background-image: url('images/back.png');
+    /* Replace with actual URL */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    backdrop-filter: blur(5px);
+
+
+
+
 }
 
 .main {
     display: grid;
-    grid-template-columns: 30% 70%;
-    height: 75%;
-    width: 85%;
-    background: linear-gradient(135deg, #28374e, #374d6d, #605e86, #605e86, #3a3a75);
+    grid-template-columns: 60% 40%;
+    height: 73%;
+    width: 55%;
     color: white;
-    border-radius: 12px;
+    border-radius: 7px;
     overflow: hidden;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.441);
+    background: rgba(255, 255, 255, 0);
+  
+
 }
+
+
 
 .left-section {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
-}
+    /* padding: 2rem; */
+    height: 100%;
+    overflow: hidden; /* Optional: prevent extra content from overflowing */
+
+    backdrop-filter: blur(5px);
+    /* -webkit-backdrop-filter: blur(10px); */
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Optional glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Optional subtle border */}
 
 .welcome-text {
     font-size: 1vw;
@@ -35,21 +58,22 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 3rem;
+    /* padding: 3rem; */
+    background: rgba(255, 255, 255, 0.477);
+
 }
 
 .auth-container {
     width: 95%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.9);
     padding: 2rem;
-    clip-path: ellipse(100% 100% at 100% 50%);
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+    /* clip-path: ellipse(100% 100% at 100% 50%); */
+    /* box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1); */
 }
 
 .form {
-    margin-left: 9vw;
-    width: 70%;
+    margin-top: 9vw;
+    /* width: 70%; */
 }
 
 .auth-title {

@@ -8,7 +8,8 @@
 
 /* Transparent Navbar for Home Page */
 .navbar.transparent {
-    background: unset !important;  /* Removes the gradient properly */
+    background: unset !important;
+    /* Removes the gradient properly */
     box-shadow: none;
 }
 
@@ -24,7 +25,8 @@
 .logo {
     font-size: 1.8rem !important;
     font-weight: bold;
-    color: white;
+    text-shadow: 0 0 10px #cded5a;
+
 }
 
 /* Navigation Links */
@@ -78,7 +80,7 @@
 }
 
 /* Responsive Navbar */
-@media (max-width: 768px) {
+@media (max-width: 400px) {
     .navbar-container {
         flex-direction: column;
         text-align: center;
