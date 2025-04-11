@@ -1,0 +1,94 @@
+.pg-details-container {
+    padding: 30px;
+    max-width: 900px;
+    margin: auto;
+    font-family: sans-serif;
+}
+
+.pg-image-full {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.pg-content {
+    margin-top: 20px;
+}
+
+.pg-content h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.pg-content p {
+    font-size: 16px;
+    margin: 8px 0;
+}
+
+.pg-amenities {
+    margin-top: 15px;
+}
+
+.pg-amenities ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.pg-owner {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid #1976d2;
+}
+
+.book-button {
+    background-color: #1976d2;
+    color: #fff;
+    padding: 10px 16px;
+    border: none;
+    margin-top: 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.book-button:hover {
+    background-color: #1565c0;
+}
+
+.booking-status {
+    margin-top: 10px;
+    font-weight: bold;
+    color: green;
+}
+
+.wishlist-button {
+    margin-top: 10px;
+    padding: 10px 16px;
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.wishlist-button:hover {
+    background-color: #e67e22;
+}
+
+.wishlist-button.remove {
+    background-color: #c0392b;
+}
+
+.wishlist-button.remove:hover {
+    background-color: #e74c3c;
+}
+
+.booking-status {
+    margin-top: 10px;
+    color: green;
+    font-weight: bold;
+}
