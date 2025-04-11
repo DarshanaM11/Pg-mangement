@@ -48,7 +48,7 @@ const ApprovedPGList = () => {
     };
 
     return (
-        <div style={{ padding: '8%' }}>
+        <div style={{ padding: '2%' }}>
             <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>Approved PGs</Typography>
 
             {pgs.map(pg => (
@@ -94,7 +94,7 @@ const ApprovedPGList = () => {
                                 <>
                                     {/* <Typography sx={{ mt: 2 }}><strong>Images:</strong></Typography> */}
                                     <Grid container spacing={2}>
-                                        {Array.isArray(selectedPG?.images) && selectedPG.images.filter(Boolean).length > 0 ? (
+                                        {Array.isArray(selectedPG?.images) && selectedPG?.images.filter(Boolean).length > 0 ? (
                                             <div style={{ display: "flex", gap: "8px", marginTop: "16px", flexWrap: "wrap" }}>
                                                 <Typography sx={{ fontSize: "1vw", mb: 1, mt: 3 }}><strong>Images:</strong></Typography>
                                                 <Grid container spacing={2}>

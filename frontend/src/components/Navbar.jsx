@@ -21,7 +21,7 @@ export const Navbar = () => {
 
     return (
         <AppBar
-            position="absolute"
+            position="fixed"
             className={`navbar ${isHome ? "transparent" : ""}`}  // Apply transparent class on home page
             elevation={isHome ? 0 : 4} // Remove shadow when transparent
         >

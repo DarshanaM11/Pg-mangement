@@ -151,8 +151,8 @@ export const MyPGs = () => {
         <div className="mypgs-layout">
             {/* Header with Add PG button */}
             <div className="mypgs-header">
-                <Typography variant="h4" className="title">My PGs</Typography>
-                <Button
+                <Typography variant="h4" sx={{fontWeight:"bold"}}>My PGs</Typography>
+                {/* <Button
                     variant="contained"
                     color="primary"
                     onClick={() => {
@@ -170,7 +170,7 @@ export const MyPGs = () => {
                     }}
                 >
                     Add PG
-                </Button>
+                </Button> */}
             </div>
 
             {loading ? (

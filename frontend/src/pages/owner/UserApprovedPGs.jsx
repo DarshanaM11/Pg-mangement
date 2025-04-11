@@ -25,20 +25,26 @@ const UserApprovedPGs = () => {
         fetchData();
     }, []);
 
-    if (loading) return <CircularProgress />;
+    if (loading) return <CircularProgress sx={{ mt: 5 }} />;
 
     return (
-        <div style={{ padding: 20 }}>
-            <Typography variant="h5" gutterBottom>User Approved Bookings</Typography>
-            {approvedPGs.map((pg) => (
-                <Paper key={pg._id} style={{ marginBottom: 20, padding: 16 }}>
-                    <Typography variant="h6">{pg.name}</Typography>
-                    <Typography>Location: {pg.location}</Typography>
-                    <Typography>
-                        <strong>Booked By:</strong> {pg.bookedBy?.userName} ({pg.bookedBy?.userEmail})
-                    </Typography>
-                </Paper>
-            ))}
+        <div style={{ padding: '7%' }}>
+            <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>User Approved PGs</Typography>
+            {approvedPGs.length === 0 ? (
+                <Typography>No bookings have been approved yet.</Typography>
+            ) : (
+                approvedPGs.map((pg) => (
+                    <Paper key={pg._id} sx={{ mb: 3, p: 2, backgroundColor: "#f5f5f5" }}>
+                        <Typography variant="h6">{pg.name}</Typography>
+                        <Typography>Location: {pg.location}</Typography>
+                        <Typography>
+                            <strong>Booked By:</strong>{" "}
+                            {pg.bookedBy?.username || "N/A"} (
+                            {pg.bookedBy?.email || "N/A"})
+                        </Typography>
+                    </Paper>
+                ))
+            )}
         </div>
     );
 };

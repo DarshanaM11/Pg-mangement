@@ -1,10 +1,10 @@
 .mypgs-layout {
-    padding: 6%;
+    padding: 2%;
 }
 
 .title {
     margin-bottom: 20px;
-    font-weight: bold;
+    font-weight:bolder;
 }
 
 .pg-container {

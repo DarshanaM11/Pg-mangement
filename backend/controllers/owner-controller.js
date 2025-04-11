@@ -51,6 +51,25 @@ const approveBooking = async (req, res) => {
     }
 };
 
+// Reject a specific user's booking request
+const rejectRequest = async (req, res) => {
+    const { pgId, userId } = req.params;
+
+    try {
+        const pg = await PG.findById(pgId);
+        if (!pg || pg.owner.toString() !== req.user._id.toString()) {
+            return res.status(404).json({ message: "PG not found or unauthorized" });
+        }
+
+        pg.requests = pg.requests.filter(reqId => reqId.toString() !== userId);
+        await pg.save();
+
+        res.status(200).json({ message: "User request rejected successfully." });
+    } catch (error) {
+        res.status(500).json({ message: "Error rejecting request", error });
+    }
+};
+
 
 const getOwnerProfile = async (req, res) => {
     try {
@@ -69,4 +88,4 @@ const getOwnerProfile = async (req, res) => {
 };
 
 
-module.exports = { viewRequests, approveBooking, getOwnerProfile };
+module.exports = { viewRequests, approveBooking, getOwnerProfile,rejectRequest  };

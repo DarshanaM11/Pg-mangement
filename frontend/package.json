@@ -15,7 +15,7 @@
     "@fontsource/dancing-script": "^5.2.5",
     "@fontsource/great-vibes": "^5.2.5",
     "@fontsource/pacifico": "^5.2.5",
-    "@mui/icons-material": "^6.4.9",
+    "@mui/icons-material": "^6.4.11",
     "@mui/material": "^6.4.8",
     "chart.js": "^4.4.8",
     "react": "^19.0.0",
