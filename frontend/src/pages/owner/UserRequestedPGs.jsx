@@ -11,13 +11,19 @@ const UserRequestedPGs = () => {
         fetchData();
     }, []);
 
+    
     const fetchData = async () => {
         try {
             const res = await fetch("http://localhost:5001/api/pg/owner-listings-with-users", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();
-            const requestedPGs = data.filter(pg => pg.requests && pg.requests.length > 0);
+
+            // Only show PGs that are not booked and have pending requests
+            const requestedPGs = data.filter(pg =>
+                pg.bookedBy === null && pg.requests && pg.requests.length > 0
+            );
+
             setPgs(requestedPGs);
         } catch (err) {
             toast.error("Failed to load requested PGs.", err);
@@ -27,26 +33,31 @@ const UserRequestedPGs = () => {
     };
 
     const handleDecision = async (pgId, userId, action) => {
+        const method = action === "approve" ? "PUT" : "DELETE";
+        const endpoint = action === "approve"
+            ? `http://localhost:5001/api/owner/approve/${pgId}/${userId}`
+            : `http://localhost:5001/api/owner/reject/${pgId}/${userId}`;
+
         try {
-            const res = await fetch(`http://localhost:5001/api/pg/owner/${pgId}/${userId}`, {
-                method: "POST",
+            const res = await fetch(endpoint, {
+                method,
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ userId })
+                    Authorization: `Bearer ${token}`,
+                }
             });
 
             const data = await res.json();
 
             if (res.ok) {
-                toast.success(data.message || `${action} successful`);
-                fetchData(); // Refresh the list
+                toast.success(data.message || `${action}d successfully`);
+                fetchData();
             } else {
-                toast.error(data.message || "Action failed");
+                toast.error(data.message || `Failed to ${action}`);
             }
         } catch (error) {
-            toast.error("Something went wrong.", error);
+            console.error(error);
+            toast.error("Something went wrong.");
         }
     };
 
@@ -57,7 +68,9 @@ const UserRequestedPGs = () => {
             <Typography variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>User Requested PGs</Typography>
             {pgs.map((pg) => (
                 <Paper elevation={5} key={pg._id} sx={{ p: 2, mb: 3, backgroundColor: "#3946a958" }}>
-                    <Typography sx={{ fontSize: "1.2vw", fontWeight: 'bold', mb: 1 }}>{pg.name} - {pg.location}</Typography>
+                    <Typography sx={{ fontSize: "1.2vw", fontWeight: 'bold', mb: 1 }}>
+                        {pg.name} - {pg.location}
+                    </Typography>
                     <Typography sx={{ fontSize: "1.1vw", mb: 1 }}><strong>Requests:</strong></Typography>
                     <ul>
                         {pg.requests.map((req, idx) => (

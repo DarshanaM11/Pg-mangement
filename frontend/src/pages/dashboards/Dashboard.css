@@ -1,11 +1,11 @@
 .dashboard-layout {
     position: relative;
-    padding: 20px;
+    padding: 10px;
 }
 
 .upper {
     display: flex;
-    margin-top: 4vw;
+    /* margin-top: 4vw; */
     justify-content:space-between;
 }
 

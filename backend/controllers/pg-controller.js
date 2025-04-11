@@ -338,20 +338,22 @@ const approvePGRequest = async (req, res) => {
         res.status(500).json({ message: "Error approving PG request", error });
     }
 };
-
-const getOwnerPGsWithUserData = async (req, res) => {
+const getOnlyRequestedPGs = async (req, res) => {
     try {
         if (req.user.role !== "owner") {
             return res.status(403).json({ message: "Only owners can view their PGs" });
         }
 
-        const ownerPGs = await PG.find({ owner: req.user._id })
-            .populate('requests', 'username email phone')
-            .populate('bookedBy', 'username email phone');
+        const requestedPGs = await PG.find({
+            owner: req.user._id,
+            requests: { $exists: true, $not: { $size: 0 } } // filters only PGs with non-empty requests
+        })
+        .populate('requests', 'username email phone')
+        .populate('bookedBy', 'username email phone');
 
-        res.status(200).json(ownerPGs);
+        res.status(200).json(requestedPGs);
     } catch (error) {
-        res.status(500).json({ message: "Error fetching PGs with user data", error });
+        res.status(500).json({ message: "Error fetching requested PGs", error });
     }
 };
 
@@ -375,5 +377,5 @@ module.exports = {
     getAvailableApprovedPGs,
     getRequestedPGsForOwner,
     approvePGRequest,
-    getOwnerPGsWithUserData
+    getOnlyRequestedPGs
 };

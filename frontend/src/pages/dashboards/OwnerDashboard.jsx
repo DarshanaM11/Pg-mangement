@@ -78,7 +78,9 @@ export const OwnerDashboard = () => {
             // Calculate counts
             const uploadedPGCount = data?.length;
             const approvedPGCount = data?.filter(pg => pg.status === "approved").length;
-            const userRequestPGCount = data?.filter(pg => pg.requests && pg.requests.length > 0).length;
+            const userRequestPGCount = data.filter(
+                pg => pg.requests && pg.requests.length > 0 && pg.bookedBy === null
+            ).length;
             const userApprovedPGCount = data?.filter(pg => pg.bookedBy !== null).length;
 
             setCounts({
@@ -169,7 +171,7 @@ export const OwnerDashboard = () => {
         <div className="dashboard-layout">
             <div className="upper">
                 <div style={{ padding: '1vw' }}>
-                    <Button variant="contained" sx={{ fontSize: "0.7vw" }} onClick={handleAddPG}>
+                    <Button variant="contained" sx={{ fontSize: "0.9vw" }} onClick={handleAddPG}>
                         Add Pg
                     </Button>
                 </div>
@@ -223,7 +225,7 @@ export const OwnerDashboard = () => {
             >
                 <List>
                     <ListItem >
-                        <ListItemText primary="Owner Darshboard" primaryTypographyProps={{ fontSize: 25,display:'flex',alignItems:'center' }} />
+                        <ListItemText primary="Owner Darshboard" primaryTypographyProps={{ fontSize: 25, display: 'flex', alignItems: 'center' }} />
                     </ListItem>
                     <ListItem button onClick={handleProfileClick}>
                         <ListItemText primary="Profile" primaryTypographyProps={{ fontSize: 18, ml: 2 }} />
